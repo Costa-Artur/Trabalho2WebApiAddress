@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Univali.Api.Entities;
+using Univali.Api.Models;
 
 namespace Univali.Api.Controllers;
 
@@ -15,14 +16,20 @@ public class CustomersController : ControllerBase
     }
 
     [HttpGet("{id}", Name = "GetCustomerById")]
-    public ActionResult<Customer> GetCustomerById (int id) 
+    public ActionResult<CustomerDto> GetCustomerById (int id) 
     {
         Console.WriteLine($"id: {id}");
-        var result = Data.Instance.Customers.FirstOrDefault(c => c.Id == id);
+        var customerFromData = Data.Instance.Customers.FirstOrDefault(c => c.Id == id);
 
-        if(result != null) return Ok(result);
+        if(customerFromData == null) return NotFound();
 
-        return NotFound();
+        CustomerDto customerToReturn = new CustomerDto 
+        {
+            Id = customerFromData.Id,
+            Name = customerFromData.Name,
+            Cpf = customerFromData.Cpf
+        };
+        return Ok(customerToReturn);
     }
 
     [HttpGet("cpf/{cpf}")]
