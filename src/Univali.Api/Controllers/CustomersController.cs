@@ -19,15 +19,15 @@ public class CustomersController : ControllerBase
     public ActionResult<CustomerDto> GetCustomerById (int id) 
     {
         Console.WriteLine($"id: {id}");
-        var customerFromData = Data.Instance.Customers.FirstOrDefault(c => c.Id == id);
+        var customerFromDatabase = Data.Instance.Customers.FirstOrDefault(c => c.Id == id);
 
-        if(customerFromData == null) return NotFound();
+        if(customerFromDatabase == null) return NotFound();
 
         CustomerDto customerToReturn = new CustomerDto 
         {
-            Id = customerFromData.Id,
-            Name = customerFromData.Name,
-            Cpf = customerFromData.Cpf
+            Id = customerFromDatabase.Id,
+            Name = customerFromDatabase.Name,
+            Cpf = customerFromDatabase.Cpf
         };
         return Ok(customerToReturn);
     }
@@ -36,11 +36,17 @@ public class CustomersController : ControllerBase
     public ActionResult<Customer> GetCustomerByCpf (string cpf) 
     {
         Console.WriteLine($"cpf: {cpf}");
-        var result = Data.Instance.Customers.FirstOrDefault(c => c.Cpf == cpf);
+        var customerFromDatabase = Data.Instance.Customers.FirstOrDefault(c => c.Cpf == cpf);
 
-        if(result != null) return Ok(result);
+        if(customerFromDatabase == null) return NotFound();
 
-        return NotFound();
+        CustomerDto customerToReturn = new CustomerDto 
+        {
+            Id = customerFromDatabase.Id,
+            Name = customerFromDatabase.Name,
+            Cpf = customerFromDatabase.Cpf
+        };
+        return Ok(customerToReturn);
     }
     [HttpPost]
     public ActionResult<Customer> CreateCustomer (Customer customer) 
