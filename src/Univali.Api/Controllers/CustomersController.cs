@@ -11,7 +11,8 @@ public class CustomersController : ControllerBase
     [HttpGet]
     public ActionResult<IEnumerable<CustomerDto>> GetCustomers()
     {
-        var customersToReturn = Data.Instance.Customers.Select(customer => new CustomerDto{
+        var customersToReturn = Data.Instance.Customers.Select(customer => new CustomerDto()
+        {
             Id = customer.Id,
             Name = customer.Name,
             Cpf = customer.Cpf
@@ -24,10 +25,10 @@ public class CustomersController : ControllerBase
     {
         Console.WriteLine($"id: {id}");
         var customerFromDatabase = Data.Instance.Customers.FirstOrDefault(c => c.Id == id);
-
+        
         if(customerFromDatabase == null) return NotFound();
 
-        CustomerDto customerToReturn = new CustomerDto 
+        CustomerDto customerToReturn = new CustomerDto()
         {
             Id = customerFromDatabase.Id,
             Name = customerFromDatabase.Name,
@@ -44,7 +45,7 @@ public class CustomersController : ControllerBase
 
         if(customerFromDatabase == null) return NotFound();
 
-        CustomerDto customerToReturn = new CustomerDto 
+        CustomerDto customerToReturn = new CustomerDto()
         {
             Id = customerFromDatabase.Id,
             Name = customerFromDatabase.Name,
@@ -52,22 +53,60 @@ public class CustomersController : ControllerBase
         };
         return Ok(customerToReturn);
     }
+
     [HttpPost]
-    public ActionResult<CustomerDto> CreateCustomer (Customer customer) 
+    public ActionResult<CustomerDto> CreateCustomer (
+        CustomerForCreationDto customerForCreationDto) 
     {
-        var newCustomer = new Customer 
+        var customerEntity = new Customer 
         {
             Id = Data.Instance.Customers.Max(c => c.Id)+1,
-            Name = customer.Name,
-            Cpf = customer.Cpf
+            Name = customerForCreationDto.Name,
+            Cpf = customerForCreationDto.Cpf
         };
 
-        Data.Instance.Customers.Add(newCustomer);
+        Data.Instance.Customers.Add(customerEntity);
+
+        var customerToReturn = new CustomerDto()
+        {
+            Id = customerEntity.Id,
+            Name = customerEntity.Name,
+            Cpf = customerEntity.Cpf
+        };
+
         return CreatedAtRoute
         (
             "GetCustomerById",
-            new {id = newCustomer.Id },
-            newCustomer
+            new {id = customerToReturn.Id },
+            customerToReturn
         );
     }
+
+    [HttpPut("{id}")]
+    public ActionResult UpdateCustomer (int id, 
+        CustomerForUpdateDto customerForUpdateDto) 
+    {
+        if(id != customerForUpdateDto.Id) return BadRequest();
+        var customerFromDatabase = Data.Instance.Customers.FirstOrDefault(customer => customer.Id == id);
+
+        if(customerFromDatabase == null) return NotFound();
+
+        customerFromDatabase.Name = customerForUpdateDto.Name;
+        customerFromDatabase.Cpf = customerForUpdateDto.Cpf;
+
+        return NoContent();
+    }
+   
+   [HttpDelete("{id}")]
+
+   public ActionResult DeleteCustomer (int id) 
+   {
+        var customerFromDatabase = Data.Instance.Customers.FirstOrDefault(customer => customer.Id == id);
+
+        if(customerFromDatabase == null) return NotFound();
+
+        Data.Instance.Customers.Remove(customerFromDatabase);
+
+        return NoContent();
+   }
 }
