@@ -9,10 +9,14 @@ namespace Univali.Api.Controllers;
 public class CustomersController : ControllerBase
 {
     [HttpGet]
-    public ActionResult<IEnumerable<Customer>> GetCustomers()
+    public ActionResult<IEnumerable<CustomerDto>> GetCustomers()
     {
-        var result = Data.Instance.Customers;
-        return Ok(result);
+        var customersToReturn = Data.Instance.Customers.Select(customer => new CustomerDto{
+            Id = customer.Id,
+            Name = customer.Name,
+            Cpf = customer.Cpf
+        });
+        return Ok(customersToReturn);
     }
 
     [HttpGet("{id}", Name = "GetCustomerById")]
@@ -33,7 +37,7 @@ public class CustomersController : ControllerBase
     }
 
     [HttpGet("cpf/{cpf}")]
-    public ActionResult<Customer> GetCustomerByCpf (string cpf) 
+    public ActionResult<CustomerDto> GetCustomerByCpf (string cpf) 
     {
         Console.WriteLine($"cpf: {cpf}");
         var customerFromDatabase = Data.Instance.Customers.FirstOrDefault(c => c.Cpf == cpf);
@@ -49,7 +53,7 @@ public class CustomersController : ControllerBase
         return Ok(customerToReturn);
     }
     [HttpPost]
-    public ActionResult<Customer> CreateCustomer (Customer customer) 
+    public ActionResult<CustomerDto> CreateCustomer (Customer customer) 
     {
         var newCustomer = new Customer 
         {
