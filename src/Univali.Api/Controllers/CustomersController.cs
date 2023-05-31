@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Univali.Api.Entities;
 using Univali.Api.Models;
@@ -109,4 +110,33 @@ public class CustomersController : ControllerBase
 
         return NoContent();
    }
+   
+   //https://learn.microsoft.com/en-us/aspnet/core/web-api/jsonpatch?view=aspnetcore-7.0 = AspNetCore.JsonPatch e AspNetCore.Mvc.NewtonsoftJson - MyJPIF.cs
+   //Utiliza o JsonPatch para utilizar o metodo Patch do http
+   //E o newtonsoftJson é um requerimento do pacote JsonPatch, pois o padrao é o System.text e precisa se instalar e configurar os pacotes
+   //Configuração adicional no Program.cs
+
+   [HttpPatch("{id}")]
+   public ActionResult PartiallyUpdateCustomer (
+    [FromBody] JsonPatchDocument<CustomerForPatchDto> patchDocument,
+    [FromRoute] int id)
+    {
+        var customerFromDatabase = Data.Instance.Customers
+            .FirstOrDefault(customer => customer.Id == id);
+        
+        if(customerFromDatabase == null) return NotFound();
+
+        var customerToPatch = new CustomerForPatchDto 
+        {
+            Name = customerFromDatabase.Name,
+            Cpf = customerFromDatabase.Cpf
+        };
+
+        patchDocument.ApplyTo(customerToPatch);
+
+        customerFromDatabase.Name = customerToPatch.Name;
+        customerFromDatabase.Cpf = customerToPatch.Cpf;
+
+        return NoContent();
+    }
 }
