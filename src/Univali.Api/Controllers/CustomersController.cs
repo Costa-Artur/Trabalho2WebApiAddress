@@ -60,7 +60,6 @@ public class CustomersController : ControllerBase
     public ActionResult<CustomerDto> CreateCustomer(
         CustomerForCreationDto customerForCreationDto)
     {
-        
         if(!ModelState.IsValid)
         {
             Response.ContentType = "application/problem+json";
@@ -161,4 +160,29 @@ public class CustomersController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpGet("with-address")]
+    public ActionResult<IEnumerable<CustomerWithAdressesDto>> GetCustomersWithAddresses ()
+    {
+        var customersFromDatabase = Data.Instance.Customers;
+
+        var customersToReturn = customersFromDatabase
+            .Select(customer => new CustomerWithAdressesDto
+            {
+                Id = customer.Id,
+                Name= customer.Name,
+                Cpf = customer.Cpf,
+                Adresses = customer.Addresses
+                    .Select(address =>  new AddressDto
+                    {
+                        Id = address.Id,
+                        City = address.City,
+                        Street = address.Street
+                    }).ToList()
+            }
+        );
+
+        return Ok(customersToReturn); //O toList não está aqui pois o IEnumerable não tem a própria lista e sim instruções para fazer a lista, que serão ativadas com o toList
+    }
+
 }
