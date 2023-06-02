@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Univali.Api.Entities;
 using Univali.Api.Models;
 
@@ -59,7 +60,22 @@ public class CustomersController : ControllerBase
     public ActionResult<CustomerDto> CreateCustomer(
         CustomerForCreationDto customerForCreationDto)
     {
+        
+        if(!ModelState.IsValid)
+        {
+            Response.ContentType = "application/problem+json";
+            //Cria a fábrica de um bjeto de detalhes de problemas da aplicação
+            var problemDetailsFactory = HttpContext.RequestServices.GetRequiredService<ProblemDetailsFactory>();
 
+            //Cria um objeto de detalhes de problema de validação
+            var validationProblemDetails = problemDetailsFactory.CreateValidationProblemDetails(HttpContext, ModelState);
+
+            //Atribui status code no corpo do response
+
+            validationProblemDetails.Status = StatusCodes.Status422UnprocessableEntity;
+            return UnprocessableEntity(validationProblemDetails);
+        } 
+        
         var customerEntity = new Customer
         {
             Id = Data.Instance.Customers.Max(c => c.Id) + 1,

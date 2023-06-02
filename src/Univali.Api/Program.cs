@@ -8,10 +8,12 @@ builder.WebHost.ConfigureKestrel(options => {
 
 // Add services to the container.
 
-
 // =======================Configuracao jsonPatch=========================================== 
 builder.Services.AddControllers(options =>{
     options.InputFormatters.Insert(0, MyJPIF.GetJsonPatchInputFormatter());
+}).ConfigureApiBehaviorOptions(options => 
+{
+    options.SuppressModelStateInvalidFilter = true;
 });
 //=========================================================================================
 
