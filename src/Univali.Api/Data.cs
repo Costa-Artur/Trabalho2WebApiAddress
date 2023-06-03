@@ -16,13 +16,37 @@ namespace Univali.Api
                 {
                     Id = 1,
                     Name = "Linus Torvalds",
-                    Cpf = "73473943096"
+                    Cpf = "73473943096",
+                    Addresses = new List<Address>()
+                    {
+                        new Address
+                        {
+                            Id = 1,
+                            Street = "Verão do Cometa",
+                            City = "Elvira"
+                        },
+                        new Address
+                        {
+                            Id = 2,
+                            Street = "Borboletas Psicodélicas",
+                            City = "Perobia"
+                        }
+                    }
                 },
                 new Customer
                 {
                     Id = 2,
                     Name = "Elon Musk",
-                    Cpf = "95395994076"
+                    Cpf = "95395994076",
+                    Addresses = new List<Address>()
+                    {
+                        new Address 
+                        {
+                            Id = 3,
+                            Street = "Canção Excêntrica",
+                            City = "Salandra"
+                        }
+                    }
                 }
             };
         }
