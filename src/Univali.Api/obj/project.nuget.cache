@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "jr5+Rlf1OKXJVLrVPANYes/w7wA5ty+6fhC7FJBQEddGWlIuuVuVv24OuaK/FaiFuMw9kGZdxS96gVnLr1F8qA==",
+  "dgSpecHash": "v1lZgYdLCUJLeU2V+iSi0FafeeFrnz+jemRnVVHD0p0w5BDrya+EhhIa5pkEqA6NXPqk7o6NXiJVyvywvyEVNw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\artur\\Documents\\PROGRAMAÇÃO\\C#\\Web Api\\WebApi\\src\\Univali.APi\\Univali.Api.csproj",
+  "projectFilePath": "C:\\Users\\artur\\Documents\\PROGRAMAÇÃO\\C#\\Web Api\\WebApi\\src\\Univali.Api\\Univali.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\artur\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\7.0.4\\microsoft.aspnetcore.jsonpatch.7.0.4.nupkg.sha512",
     "C:\\Users\\artur\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\7.0.4\\microsoft.aspnetcore.mvc.newtonsoftjson.7.0.4.nupkg.sha512",

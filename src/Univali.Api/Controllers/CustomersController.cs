@@ -185,4 +185,52 @@ public class CustomersController : ControllerBase
         return Ok(customersToReturn); //O toList não está aqui pois o IEnumerable não tem a própria lista e sim instruções para fazer a lista, que serão ativadas com o toList
     }
 
+    [HttpPost("with-address")]
+
+    public ActionResult<CustomerForCreationWithAddressDto> CreateCustomerWithAddresses (CustomerForCreationWithAddressDto customerForCreationDto)
+    {
+        var customerEntity = new Customer
+        {
+            Id = Data.Instance.Customers.Max(c => c.Id) + 1,
+            Name = customerForCreationDto.Name,
+            Cpf = customerForCreationDto.Cpf,
+            Addresses = new List<Address>()
+        };
+
+        foreach (var address in customerForCreationDto.Addresses) 
+        {
+            var addressEntity = new Address 
+            {
+                Id = Data.Instance.Customers.SelectMany(c => c.Addresses).Max(a => a.Id) + 1,
+                Street = address.Street,
+                City = address.City
+            };
+            Console.WriteLine($"AddressId {addressEntity.Id}");
+            customerEntity.Addresses.Add(addressEntity);
+        }
+
+        Data.Instance.Customers.Add(customerEntity);
+
+        var customerToReturn = new CustomerDtoWithAddress
+        {
+            Id = customerEntity.Id,
+            Name = customerEntity.Name,
+            Cpf = customerEntity.Cpf,
+        };
+
+        foreach(var address in customerEntity.Addresses) 
+        {
+            var addressToReturn = new AddressDto 
+            {
+                Id = address.Id,
+                City = address.City,
+                Street = address.Street
+            };
+
+            customerToReturn.Addresses.Add(addressToReturn);
+        }
+
+        return Ok(customerToReturn);
+        
+    }
 }
