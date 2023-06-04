@@ -38,5 +38,12 @@ public class AddressController : ControllerBase
         
         return addressToReturn != null ? Ok(addressToReturn) : NotFound();
     }
+
+    [HttpPost]
+
+    public ActionResult AddAddress (AddressForCreationDto address) 
+    {
+        return Ok();
+    }
     
 }
