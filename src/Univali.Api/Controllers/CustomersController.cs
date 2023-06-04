@@ -63,7 +63,7 @@ public class CustomersController : ControllerBase
         if(!ModelState.IsValid)
         {
             Response.ContentType = "application/problem+json";
-            //Cria a fábrica de um bjeto de detalhes de problemas da aplicação
+            //Cria a fábrica de um objeto de detalhes de problemas da aplicação
             var problemDetailsFactory = HttpContext.RequestServices.GetRequiredService<ProblemDetailsFactory>();
 
             //Cria um objeto de detalhes de problema de validação
