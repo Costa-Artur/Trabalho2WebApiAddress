@@ -29,7 +29,7 @@ public class AddressController : ControllerBase
         return Ok(addressesToReturn);
     }
 
-    [HttpGet("{addressId}")]
+    [HttpGet("{addressId}", Name = "GetAddress")]
     public ActionResult<AddressDto> GetAddress (int customerId, int addressId) 
     {
         var addressToReturn = Data.Instance
@@ -64,7 +64,13 @@ public class AddressController : ControllerBase
             City = addressEntity.City
         };
 
-        return Ok(addressToReturn);
+        return CreatedAtRoute(
+            "GetAddress",
+            new {
+                customerId = customerFromDatabase.Id,
+                addressId = addressToReturn.Id
+            }
+        );
     }
 
     [HttpDelete("{addressId}")]
@@ -89,6 +95,31 @@ public class AddressController : ControllerBase
 
         customerFromDatabase.Addresses.Remove(addressFromDatabase);
 
+        return NoContent();
+    }
+
+    [HttpPut]
+    public ActionResult UpdateAddressesFromCustomer (int customerId, List<AddressForUpdateDto> addressList) 
+    {
+        var customerFromDatabase = Data.Instance.Customers.FirstOrDefault(customer => customer.Id == customerId);
+
+        if(customerFromDatabase == null) return NotFound();
+
+        if(customerFromDatabase.Addresses.Any())
+        {
+            customerFromDatabase.Addresses = new List<Address>();
+
+            foreach(AddressForUpdateDto address in addressList) {
+                var addressEntity = new Address {
+                Id = Data.Instance.Customers.SelectMany(c => c.Addresses).Max(a => a.Id) + 1,
+                Street = address.Street,
+                City = address.City
+                };
+                customerFromDatabase.Addresses.Add(addressEntity);
+            }
+        } else {
+            return BadRequest();
+        }
         return NoContent();
     }
 

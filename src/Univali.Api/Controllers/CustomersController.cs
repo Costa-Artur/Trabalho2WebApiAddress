@@ -197,6 +197,8 @@ public class CustomersController : ControllerBase
             Addresses = new List<Address>()
         };
 
+        Data.Instance.Customers.Add(customerEntity);
+
         foreach (var address in customerForCreationDto.Addresses) 
         {
             var addressEntity = new Address 
@@ -208,8 +210,6 @@ public class CustomersController : ControllerBase
             Console.WriteLine($"AddressId {addressEntity.Id}");
             customerEntity.Addresses.Add(addressEntity);
         }
-
-        Data.Instance.Customers.Add(customerEntity);
 
         var customerToReturn = new CustomerDtoWithAddress
         {
