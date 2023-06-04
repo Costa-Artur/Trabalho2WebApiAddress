@@ -40,12 +40,13 @@ public class AddressController : ControllerBase
         return addressToReturn != null ? Ok(addressToReturn) : NotFound();
     }
 
-    [HttpPost("{customerId}")]
+    [HttpPost]
 
     public ActionResult<AddressDto> AddAddress (AddressForCreationDto addressForCreationDto, int customerId) 
     {
         var addressEntity = new Address 
         {
+            Id = Data.Instance.Customers.SelectMany(c => c.Addresses).Max(a => a.Id) + 1,
             Street = addressForCreationDto.Street,
             City = addressForCreationDto.City
         };
@@ -59,24 +60,32 @@ public class AddressController : ControllerBase
         var addressToReturn = new AddressDto 
         {
             Id = addressEntity.Id,
-                Street = addressEntity.Street,
-                City = addressEntity.City
+            Street = addressEntity.Street,
+            City = addressEntity.City
         };
 
         return Ok(addressToReturn);
     }
 
-    [HttpDelete("{idAddress}")]
-
+    [HttpDelete("{addressId}")]
     public ActionResult DeleteAddressFromCustomer (int addressId, int customerId) 
     {
+        Console.WriteLine($"id: {customerId}");
         var customerFromDatabase = Data.Instance.Customers.FirstOrDefault(c => c.Id == customerId);
 
-        if(customerFromDatabase == null) return NotFound();
+        if(customerFromDatabase == null)
+        {
+            Console.WriteLine("usuario nao encontrado"); 
+            return NotFound();
+        } 
 
         var addressFromDatabase = customerFromDatabase.Addresses.FirstOrDefault(a => a.Id == addressId);
 
-        if(addressFromDatabase == null) return NotFound();
+        if(addressFromDatabase == null)
+        {
+            Console.WriteLine("usuario nao encontrado"); 
+            return NotFound();
+        } 
 
         customerFromDatabase.Addresses.Remove(addressFromDatabase);
 
