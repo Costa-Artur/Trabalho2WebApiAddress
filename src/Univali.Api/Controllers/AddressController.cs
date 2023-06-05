@@ -35,7 +35,6 @@ public class AddressController : ControllerBase
         var addressToReturn = Data.Instance
             .Customers.FirstOrDefault(customer => customer.Id == customerId)
             ?.Addresses.FirstOrDefault(address => address.Id == addressId);
-
         
         return addressToReturn != null ? Ok(addressToReturn) : NotFound();
     }
@@ -82,7 +81,6 @@ public class AddressController : ControllerBase
 
         if(customerFromDatabase == null)
         {
-            Console.WriteLine("usuario nao encontrado"); 
             return NotFound();
         } 
 
@@ -90,7 +88,6 @@ public class AddressController : ControllerBase
 
         if(addressFromDatabase == null)
         {
-            Console.WriteLine("usuario nao encontrado"); 
             return NotFound();
         } 
 
