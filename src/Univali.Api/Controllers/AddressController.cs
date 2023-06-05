@@ -117,10 +117,9 @@ public class AddressController : ControllerBase
                 };
                 customerFromDatabase.Addresses.Add(addressEntity);
             }
-        } else {
-            return BadRequest();
-        }
-        return NoContent();
-    }
 
+            return NoContent();
+        }
+            return BadRequest();
+    }
 }
