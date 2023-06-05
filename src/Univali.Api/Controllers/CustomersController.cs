@@ -161,7 +161,7 @@ public class CustomersController : ControllerBase
         return NoContent();
     }
 
-    [HttpGet("with-address")]
+    [HttpGet("with-address", Name = "GetCustomersWithAddresses")]
     public ActionResult<IEnumerable<CustomerWithAdressesDto>> GetCustomersWithAddresses ()
     {
         var customersFromDatabase = Data.Instance.Customers;
@@ -230,7 +230,13 @@ public class CustomersController : ControllerBase
             customerToReturn.Addresses.Add(addressToReturn);
         }
 
-        return Ok(customerToReturn);
+        return CreatedAtRoute(
+            "GetCustomersWithAddresses",
+            new {
+                customerId = customerToReturn.Id
+            },
+            customerToReturn
+        );
         
     }
 }

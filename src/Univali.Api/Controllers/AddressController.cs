@@ -69,7 +69,8 @@ public class AddressController : ControllerBase
             new {
                 customerId = customerFromDatabase.Id,
                 addressId = addressToReturn.Id
-            }
+            },
+            addressToReturn
         );
     }
 
