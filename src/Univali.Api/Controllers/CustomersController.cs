@@ -172,7 +172,7 @@ public class CustomersController : ControllerBase
                 Id = customer.Id,
                 Name= customer.Name,
                 Cpf = customer.Cpf,
-                Adresses = customer.Addresses
+                Addresses = customer.Addresses
                     .Select(address =>  new AddressDto
                     {
                         Id = address.Id,
@@ -185,9 +185,33 @@ public class CustomersController : ControllerBase
         return Ok(customersToReturn); //O toList não está aqui pois o IEnumerable não tem a própria lista e sim instruções para fazer a lista, que serão ativadas com o toList
     }
 
+    [HttpGet("with-address/{customerId}", Name = "GetCustomersWithAddresses")]
+    public ActionResult<IEnumerable<CustomerWithAdressesDto>> GetCustomersWithAddressesById (int customerId)
+    {
+        var customerFromDatabase = Data.Instance.Customers.FirstOrDefault(customer=>customer.Id == customerId);
+
+        if(customerFromDatabase == null) return NotFound();
+
+        var customerToReturn = new CustomerWithAdressesDto
+        {
+            Id = customerFromDatabase.Id,
+            Name= customerFromDatabase.Name,
+            Cpf = customerFromDatabase.Cpf,
+            Addresses = customerFromDatabase.Addresses
+                .Select(address =>  new AddressDto
+                {
+                    Id = address.Id,
+                    City = address.City,
+                    Street = address.Street
+                }).ToList()
+        };
+
+        return Ok(customerToReturn); //O toList não está aqui pois o IEnumerable não tem a própria lista e sim instruções para fazer a lista, que serão ativadas com o toList
+    }
+
     [HttpPost("with-address")]
 
-    public ActionResult<CustomerForCreationWithAddressDto> CreateCustomerWithAddresses (CustomerForCreationWithAddressDto customerForCreationDto)
+    public ActionResult<CustomerForCreationWithAddressesDto> CreateCustomerWithAddresses (CustomerForCreationWithAddressesDto customerForCreationDto)
     {
         var customerEntity = new Customer
         {
@@ -211,7 +235,7 @@ public class CustomersController : ControllerBase
             customerEntity.Addresses.Add(addressEntity);
         }
 
-        var customerToReturn = new CustomerDtoWithAddress
+        var customerToReturn = new CustomerWithAdressesDto
         {
             Id = customerEntity.Id,
             Name = customerEntity.Name,
